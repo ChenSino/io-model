@@ -15,6 +15,9 @@ import java.net.Socket;
  * 无非是用了多线程隔离，事实在每个线程内部的read以及主线程的accept依然是阻塞的，一旦被阻塞，这个线程就是空等，
  * 啥都做不了
  */
+/**
+ * ##############【bio实现多线程阻塞io模型】################
+ */
 public class SocketServer1 {
 
     static {
@@ -27,7 +30,7 @@ public class SocketServer1 {
     private static final Log LOGGER = LogFactory.getLog(SocketServer1.class);
 
     public static void main(String[] args) throws Exception{
-        ServerSocket serverSocket = new ServerSocket(83);
+        ServerSocket serverSocket = new ServerSocket(2222);
 
         try {
             while(true) {
@@ -55,7 +58,6 @@ public class SocketServer1 {
                 }
                 //下面打印信息
                 SocketServer1.LOGGER.info("服务器收到来自于端口：" + sourcePort + "的信息：" + message);
-
                 //下面开始发送信息
                 out.write("回发响应信息！".getBytes());
 

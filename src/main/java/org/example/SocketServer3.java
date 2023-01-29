@@ -13,7 +13,8 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.BasicConfigurator;
 
 /**
- * 非阻塞IO模型，在多线程阻塞io模型基础上新增了非阻塞
+ * 非阻塞IO模型，accept和read都加了超时处理，都变成非阻塞了
+
  */
 public class SocketServer3 {
 

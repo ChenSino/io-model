@@ -16,7 +16,7 @@ import java.util.Iterator;
 /**
  * IO多路复用模型，一个线程（main）中处理并发请求
  */
-public class SocketServer5 {
+public class SocketIOMultiThread1 {
 
     static {
         BasicConfigurator.configure();
@@ -25,7 +25,7 @@ public class SocketServer5 {
     /**
      * 日志
      */
-    private static final Log LOGGER = LogFactory.getLog(SocketServer5.class);
+    private static final Log LOGGER = LogFactory.getLog(SocketIOMultiThread1.class);
 
     public static void main(String[] args) throws Exception {
         ServerSocketChannel serverChannel = ServerSocketChannel.open();
@@ -61,7 +61,7 @@ public class SocketServer5 {
 
                     SelectableChannel selectableChannel = readyKey.channel();
                     if (readyKey.isValid() && readyKey.isAcceptable()) {
-                        SocketServer5.LOGGER.info("======channel通道已经准备好=======");
+                        SocketIOMultiThread1.LOGGER.info("======channel通道已经准备好=======");
                         /*
                          * 当server socket channel通道已经准备好，就可以从server socket channel中获取socketchannel了
                          * 拿到socket channel后，要做的事情就是马上到selector注册这个socket channel感兴趣的事情。
@@ -72,15 +72,15 @@ public class SocketServer5 {
                         registerSocketChannel(socketChannel, selector);
 
                     } else if (readyKey.isValid() && readyKey.isConnectable()) {
-                        SocketServer5.LOGGER.info("======socket channel 建立连接=======");
+                        SocketIOMultiThread1.LOGGER.info("======socket channel 建立连接=======");
                     } else if (readyKey.isValid() && readyKey.isReadable()) {
-                        SocketServer5.LOGGER.info("======socket channel 数据准备完成，可以去读==读取=======");
+                        SocketIOMultiThread1.LOGGER.info("======socket channel 数据准备完成，可以去读==读取=======");
                         readSocketChannel(readyKey);
                     }
                 }
             }
         } catch (Exception e) {
-            SocketServer5.LOGGER.error(e.getMessage(), e);
+            SocketIOMultiThread1.LOGGER.error(e.getMessage(), e);
         } finally {
             serverSocket.close();
         }
@@ -129,14 +129,14 @@ public class SocketServer5 {
             realLen = clientSocketChannel.read(contextBytes);
         } catch (Exception e) {
             //这里抛出了异常，一般就是客户端因为某种原因终止了。所以关闭channel就行了
-            SocketServer5.LOGGER.error(e.getMessage());
+            SocketIOMultiThread1.LOGGER.error(e.getMessage());
             clientSocketChannel.close();
             return;
         }
 
         //如果缓存区中没有任何数据（但实际上这个不太可能，否则就不会触发OP_READ事件了）
         if (realLen == -1) {
-            SocketServer5.LOGGER.warn("====缓存区没有数据？====");
+            SocketIOMultiThread1.LOGGER.warn("====缓存区没有数据？====");
             return;
         }
 
@@ -154,7 +154,7 @@ public class SocketServer5 {
         if (message.indexOf("over") != -1) {
             //清空已经读取的缓存，并从新切换为写状态(这里要注意clear()和capacity()两个方法的区别)
             contextBytes.clear();
-            SocketServer5.LOGGER.info("线程：" + Thread.currentThread().getName()+ "端口:" + resourcePort + "客户端发来的信息======message : " + message);
+            SocketIOMultiThread1.LOGGER.info("线程：" + Thread.currentThread().getName()+ "端口:" + resourcePort + "客户端发来的信息======message : " + message);
 
             //======================================================
             //          当然接受完成后，可以在这里正式处理业务了        
@@ -165,7 +165,7 @@ public class SocketServer5 {
             clientSocketChannel.write(sendBuffer);
             clientSocketChannel.close();
         } else {
-            SocketServer5.LOGGER.info("线程：" + Thread.currentThread().getName()+ "端口:" + resourcePort + "客户端信息还未接受完，继续接受======message : " + message);
+            SocketIOMultiThread1.LOGGER.info("线程：" + Thread.currentThread().getName()+ "端口:" + resourcePort + "客户端信息还未接受完，继续接受======message : " + message);
             //这是，limit和capacity的值一致，position的位置是realLen的位置
             contextBytes.position(realLen);
             contextBytes.limit(contextBytes.capacity());

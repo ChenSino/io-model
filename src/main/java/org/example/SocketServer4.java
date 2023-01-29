@@ -13,7 +13,7 @@ import java.net.SocketTimeoutException;
 
 
 /**
- * 通过加入线程的概念，让socket server能够在应用层面，
+ * 在SocketServer3基础上通过加入线程的概念，让socket server能够在应用层面，
  * 通过非阻塞的方式同时处理多个socket套接字
  * @author yinwenjie
  */

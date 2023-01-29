@@ -17,7 +17,7 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-jcl</artifactId>
-            <version>6.0.3</version>
+            <version>5.3.24</version>
         </dependency>
         <dependency>
             <groupId>log4j</groupId>
@@ -35,7 +35,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>org.example.SocketServer5</mainClass>
+                            <mainClass>org.example.SocketIOMultiThread1</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>

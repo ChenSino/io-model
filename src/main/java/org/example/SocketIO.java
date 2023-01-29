@@ -6,6 +6,17 @@ import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+/**
+ * 【特别强调】：在java中阻塞IO和非阻塞IO和BIO、NIO并无直接关系，很多人喜欢吧java中NIO翻译成non-blockingIO我觉得很扯淡，
+ * 因为非阻塞IO并不是只能用NIO实现，可以用BIO实现也可以也可以用NIO实现，无非就是让线程不空等，当没有就绪资源时，采用轮询（死循环）
+ * 让线程去干别的事情，在后面@SocketServer3中，就可以在死循环中添加超时异常捕获，捕获到超时异常后，可以让线程去做别的事情，这就是
+ * 所谓的非阻塞，所以NIO不等于非阻塞IO,很多人喜欢这样翻译，真的是很有误导性，我认为NIO更应该翻译为new io,就是一个新io,用以区别开始
+ * 的bio,仅此而已
+ */
+
+/**
+ * ##############【nio实现单线程阻塞io模型】################
+ */
 public class SocketIO {  //blocking
     public static void main(String[] args) {
         // 服务端开启一个端口进行监听
