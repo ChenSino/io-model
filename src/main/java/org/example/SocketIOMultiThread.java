@@ -9,7 +9,7 @@ import java.net.Socket;
 /**
  * io模型——阻塞io,每请求一线程模型
  */
-public class SocketIOMultiThread2 {  //blocking
+public class SocketIOMultiThread {  //blocking
     public static void main(String[] args) {
         // 服务端开启一个端口进行监听
         int port = 9999;

@@ -14,9 +14,10 @@ import java.nio.channels.*;
 import java.util.Iterator;
 
 /**
- * IO多路复用模型，一个线程（main）中处理并发请求
+ * IO多路复用模型，一个线程（main）中处理并发请求。本例中，io处理是单线程，业务处理也是用的main线程，这会导致当有一个线程readSocketChannel函数耗时比较长时
+ * 其他业务代码就无法执行，所以可以引入线程池，让readSocketChannel在线程池中执行
  */
-public class SocketIOMultiThread1 {
+public class NIO {
 
     static {
         BasicConfigurator.configure();
@@ -25,7 +26,7 @@ public class SocketIOMultiThread1 {
     /**
      * 日志
      */
-    private static final Log LOGGER = LogFactory.getLog(SocketIOMultiThread1.class);
+    private static final Log LOGGER = LogFactory.getLog(NIO.class);
 
     public static void main(String[] args) throws Exception {
         ServerSocketChannel serverChannel = ServerSocketChannel.open();
@@ -42,9 +43,9 @@ public class SocketIOMultiThread1 {
             while (true) {
                 //如果条件成立，说明本次询问selector，并没有获取到任何准备好的、感兴趣的事件
                 //java程序对多路复用IO的支持也包括了阻塞模式 和非阻塞模式两种。
-                System.out.println("---------------sleep---------------");
                 //select()在linux下测试，会调用内核的epoll_wait的函数，可以添加 Thread.sleep(xxx);配合strace命令测试epoll_wait打印速度
-                if (selector.select(100) == 0) {
+                //1s轮询一次，看看是否有可用的事件
+                if (selector.select(1000) == 0) {
                     //================================================
                     //      这里视业务情况，可以做一些然并卵的事情
                     //================================================
@@ -61,7 +62,7 @@ public class SocketIOMultiThread1 {
 
                     SelectableChannel selectableChannel = readyKey.channel();
                     if (readyKey.isValid() && readyKey.isAcceptable()) {
-                        SocketIOMultiThread1.LOGGER.info("======channel通道已经准备好=======");
+                        NIO.LOGGER.info("======channel通道已经准备好=======");
                         /*
                          * 当server socket channel通道已经准备好，就可以从server socket channel中获取socketchannel了
                          * 拿到socket channel后，要做的事情就是马上到selector注册这个socket channel感兴趣的事情。
@@ -72,15 +73,15 @@ public class SocketIOMultiThread1 {
                         registerSocketChannel(socketChannel, selector);
 
                     } else if (readyKey.isValid() && readyKey.isConnectable()) {
-                        SocketIOMultiThread1.LOGGER.info("======socket channel 建立连接=======");
+                        NIO.LOGGER.info("======socket channel 建立连接=======");
                     } else if (readyKey.isValid() && readyKey.isReadable()) {
-                        SocketIOMultiThread1.LOGGER.info("======socket channel 数据准备完成，可以去读==读取=======");
+                        NIO.LOGGER.info("======socket channel 数据准备完成，可以去读==读取=======");
                         readSocketChannel(readyKey);
                     }
                 }
             }
         } catch (Exception e) {
-            SocketIOMultiThread1.LOGGER.error(e.getMessage(), e);
+            NIO.LOGGER.error(e.getMessage(), e);
         } finally {
             serverSocket.close();
         }
@@ -129,14 +130,14 @@ public class SocketIOMultiThread1 {
             realLen = clientSocketChannel.read(contextBytes);
         } catch (Exception e) {
             //这里抛出了异常，一般就是客户端因为某种原因终止了。所以关闭channel就行了
-            SocketIOMultiThread1.LOGGER.error(e.getMessage());
+            NIO.LOGGER.error(e.getMessage());
             clientSocketChannel.close();
             return;
         }
 
         //如果缓存区中没有任何数据（但实际上这个不太可能，否则就不会触发OP_READ事件了）
         if (realLen == -1) {
-            SocketIOMultiThread1.LOGGER.warn("====缓存区没有数据？====");
+            NIO.LOGGER.warn("====缓存区没有数据？====");
             return;
         }
 
@@ -154,7 +155,7 @@ public class SocketIOMultiThread1 {
         if (message.indexOf("over") != -1) {
             //清空已经读取的缓存，并从新切换为写状态(这里要注意clear()和capacity()两个方法的区别)
             contextBytes.clear();
-            SocketIOMultiThread1.LOGGER.info("线程：" + Thread.currentThread().getName()+ "端口:" + resourcePort + "客户端发来的信息======message : " + message);
+            NIO.LOGGER.info("线程：" + Thread.currentThread().getName()+ "端口:" + resourcePort + "客户端发来的信息======message : " + message);
 
             //======================================================
             //          当然接受完成后，可以在这里正式处理业务了        
@@ -165,7 +166,7 @@ public class SocketIOMultiThread1 {
             clientSocketChannel.write(sendBuffer);
             clientSocketChannel.close();
         } else {
-            SocketIOMultiThread1.LOGGER.info("线程：" + Thread.currentThread().getName()+ "端口:" + resourcePort + "客户端信息还未接受完，继续接受======message : " + message);
+            NIO.LOGGER.info("线程：" + Thread.currentThread().getName()+ "端口:" + resourcePort + "客户端信息还未接受完，继续接受======message : " + message);
             //这是，limit和capacity的值一致，position的位置是realLen的位置
             contextBytes.position(realLen);
             contextBytes.limit(contextBytes.capacity());

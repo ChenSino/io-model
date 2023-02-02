@@ -35,7 +35,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>org.example.SocketIOMultiThread1</mainClass>
+                            <mainClass>org.example.NIO</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
