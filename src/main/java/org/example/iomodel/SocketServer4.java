@@ -1,4 +1,4 @@
-package org.example;
+package org.example.iomodel;
 
 
 import org.apache.commons.logging.Log;

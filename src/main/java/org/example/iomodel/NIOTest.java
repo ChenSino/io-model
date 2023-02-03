@@ -1,4 +1,4 @@
-package org.example;
+package org.example.iomodel;
 
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
