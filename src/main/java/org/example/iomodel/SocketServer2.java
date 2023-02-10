@@ -14,13 +14,9 @@ import org.apache.log4j.BasicConfigurator;
 
 /**
  *
- * IO非阻塞模型，本演示依然存在问题，仅仅做了accept的非阻塞，read还是阻塞的，需要升级，参考
+ * IO阻塞（我们通常说的io阻塞非阻塞是操作系统层面的，本例演示通过超时控制程序达到“非阻塞”效果，并不是真正的非阻塞，仅仅是代码层面的非阻塞），
+ * 本演示依然存在问题，仅仅做了accept的非阻塞，read还是阻塞的，需要升级，参考
  * @see SocketServer3
- */
-/**
- * ##############【bio实现非阻塞io模型】################
- * 本例很好的说明了阻塞io/非阻塞io 与bio和nio没有屁关系，使用bio一样可以实现非阻塞io模型，
- * 无非就是添加一个超时，在捕获到超时后，线程可以去做别的事情。
  */
 public class SocketServer2 {
 
@@ -40,6 +36,7 @@ public class SocketServer2 {
 
         try {
             serverSocket = new ServerSocket(8888);
+            //此设置可以保证下面的accept方法不会被一直阻塞，会等待2s,如果没有连接就直接抛出了java.net.SocketTimeoutException异常，
             serverSocket.setSoTimeout(2000);
             while(true) {
                 Socket socket = null;

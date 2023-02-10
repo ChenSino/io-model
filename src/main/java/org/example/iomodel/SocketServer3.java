@@ -13,7 +13,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.BasicConfigurator;
 
 /**
- * 非阻塞IO模型，accept和read都加了超时处理，都变成非阻塞了
+ * 阻塞IO模型，accept和read都加了超时处理，尽管程序不会一直在accept等待，但是依然不能叫做非阻塞
 
  */
 public class SocketServer3 {

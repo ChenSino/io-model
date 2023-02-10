@@ -10,6 +10,7 @@ import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
+import java.util.ArrayList;
 
 
 /**
@@ -28,6 +29,7 @@ public class SocketServer4 {
     private static final Log LOGGER = LogFactory.getLog(SocketServer4.class);
 
     public static void main(String[] args) throws Exception{
+
         ServerSocket serverSocket = new ServerSocket(8888);
         serverSocket.setSoTimeout(2000);
         try {

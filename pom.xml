@@ -29,6 +29,12 @@
             <artifactId>netty-all</artifactId>
             <version>4.1.20.Final</version>
         </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>RELEASE</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
@@ -40,7 +46,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>org.example.iomodel.NIO</mainClass>
+                            <mainClass>org.example.reactor.singlethread.Main</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
